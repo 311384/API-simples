@@ -1,22 +1,29 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
+const path = require("path");
 
 const config = require("./config");
 const port = config.port;
 
-// IMPORTANTE: Ajuste aqui para desestruturar 'sequelize'
-// Se você for usar 'connection' do mysql2/promise em algum lugar, pode adicionar aqui também:
-// const { sequelize, connection } = require("./db/connect");
-const { sequelize } = require("./db/connect"); // Importa a instância do Sequelize
+const { sequelize, connectDB } = require("./db/connect");
 
-const Product = require("./model/squima"); // Importa o modelo Product
+// Removida a importação direta do modelo Product aqui,
+// pois o modelo deve ser importado dentro de 'productRoutes.js' onde é usado.
+// const Product = require("./model/squima");
 
-app.use(express.json()); // Middleware para parsear JSON
+// <<<<<<<<<<<<<<<< ORDEM DOS MIDDLEWARES É CRÍTICA >>>>>>>>>>>>>>>>>>
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+// <<<<<<<<<<<<<<<< FIM DA ORDEM DOS MIDDLEWARES >>>>>>>>>>>>>>>>>>
 
-app.get("/", (req, res) => {
-  res.send("Minha API!");
-});
+// --- Importação e Uso das Rotas de Produto ---
+const productRoutes = require("./routes/productRoutes");
+app.use("/api", productRoutes); // <<<<<<<<<<<<< AGORA USAMOS AS ROTAS DE PRODUTO AQUI >>>>>>>>>>>>>
+// Todas as rotas em productRoutes.js terão o prefixo '/api'
 
+// Rotas genéricas da sua API (mantidas se não forem para productRoutes)
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from API!" });
 });
@@ -25,50 +32,30 @@ app.get("/api/data", (req, res) => {
   res.json({ data: [1, 2, 3, 4, 5] });
 });
 
-// Rotas de produtos (seus endpoints da API)
-app.post("/api/produtos", async (req, res) => {
-  try {
-    const { nome, preco, quantidade, categoria } = req.body;
-    const newProduct = await Product.create({
-      nome,
-      preco,
-      quantidade,
-      categoria,
-    });
-    res.status(201).json(newProduct);
-  } catch (error) {
-    console.error("Erro ao adicionar produto:", error);
-    res
-      .status(500)
-      .json({ message: "Erro ao adicionar produto", error: error.message });
-  }
+// <<<<<<<<<<<<<<<< REMOVIDAS AS ROTAS DE PRODUTO DUPLICADAS AQUI >>>>>>>>>>>>>>>>>>
+// app.post("/api/produtos", ...);
+// app.get("/api/produtos", ...);
+
+// Rota raiz para servir o index.html principal
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.get("/api/produtos", async (req, res) => {
+// <<<<<<<<<<<<<<<< INÍCIO DO SERVIDOR >>>>>>>>>>>>>>>>>>
+async function startApp() {
   try {
-    const products = await Product.findAll();
-    res.status(200).json(products);
-  } catch (error) {
-    console.error("Erro ao buscar produtos:", error);
-    res
-      .status(500)
-      .json({ message: "Erro ao buscar produtos", error: error.message });
-  }
-});
-
-app.listen(port, () => {
-  console.log(`Servidor rodando em http://localhost:${port}`);
-
-  // Sincroniza os modelos do Sequelize com o banco de dados
-  sequelize
-    .sync()
-    .then(() => {
+    await connectDB(); // Conecta e sincroniza o DB
+    app.listen(port, () => {
+      console.log(`Servidor rodando em http://localhost:${port}`);
+      console.log(`Acesse o frontend em: http://localhost:${port}🚀🚀🚀`);
       console.log(
-        "Todos os modelos (tabelas) foram sincronizados com o banco de dados."
+        `Rotas da API de produtos em: http://localhost:${port}/api/products`
       );
-    })
-    .catch((error) => {
-      console.error("Erro ao sincronizar modelos:", error);
-      process.exit(1);
     });
-});
+  } catch (error) {
+    console.error("Falha ao iniciar a aplicação:", error);
+    process.exit(1);
+  }
+}
+
+startApp();
