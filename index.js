@@ -23,19 +23,7 @@ const productRoutes = require("./routes/productRoutes");
 app.use("/api", productRoutes); // <<<<<<<<<<<<< AGORA USAMOS AS ROTAS DE PRODUTO AQUI >>>>>>>>>>>>>
 // Todas as rotas em productRoutes.js terão o prefixo '/api'
 
-// Rotas genéricas da sua API (mantidas se não forem para productRoutes)
-app.get("/api", (req, res) => {
-  res.json({ message: "Hello from API!" });
-});
-
-app.get("/api/data", (req, res) => {
-  res.json({ data: [1, 2, 3, 4, 5] });
-});
-
-// <<<<<<<<<<<<<<<< REMOVIDAS AS ROTAS DE PRODUTO DUPLICADAS AQUI >>>>>>>>>>>>>>>>>>
-// app.post("/api/produtos", ...);
-// app.get("/api/produtos", ...);
-
+// --- Fim da Importação e Uso das Rotas de Produto ---
 // Rota raiz para servir o index.html principal
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
