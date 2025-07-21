@@ -39,6 +39,7 @@ async function startApp() {
       console.log(
         `Rotas da API de produtos em: http://localhost:${port}/api/products`
       );
+      console.log(`Rota de Listar em: http://localhost:${port}/produtos.html`);
     });
   } catch (error) {
     console.error("Falha ao iniciar a aplicação:", error);

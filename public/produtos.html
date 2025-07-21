@@ -1,0 +1,87 @@
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Produtos - API</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      /* Estilos específicos para a listagem de produtos */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+        color: #333;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #0056b3;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      #produtos-lista {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+      .produto-card {
+        background-color: #e9f7ef; /* Um verde claro */
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Para espaçar o conteúdo verticalmente */
+      }
+      .produto-card h2 {
+        color: #007bff;
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 1.3em;
+      }
+      .produto-card p {
+        margin: 5px 0;
+        font-size: 0.95em;
+      }
+      .produto-card .preco {
+        font-weight: bold;
+        color: #28a745; /* Um verde mais escuro */
+        font-size: 1.1em;
+      }
+      .produto-card .categoria {
+        font-style: italic;
+        color: #6c757d;
+      }
+      .loading,
+      .erro {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1.1em;
+      }
+      .loading {
+        color: #007bff;
+      }
+      .erro {
+        color: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="nav-placeholder"></div>
+    <div class="container">
+      <h1>Produtos Disponíveis</h1>
+      <div id="produtos-lista">
+        <p class="loading">Carregando produtos...</p>
+      </div>
+    </div>
+    <script src="/listagem-produtos.js"></script>
+    <script src="/load-nav.js"></script>
+  </body>
+</html>
